@@ -67,7 +67,7 @@ start() {
     skip_docker_ifaces
 
     ### BLOCK INPUT BY DEFAULT ALLOW OUTPUT ###
-    $IPT -P INPUT DROP
+    $IPT -P INPUT ACCEPT
     $IPT -P OUTPUT ACCEPT
 
     # Enable free use of loopback interfaces
@@ -118,7 +118,7 @@ start() {
 
     # Accept inbound TCP packets
     $IPT -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-    $IPT -A INPUT -p tcp --dport 22 -m state --state NEW -s 0.0.0.0/0 -j ACCEPT
+    $IPT -A INPUT -p tcp --dport 62000 -m state --state NEW -s 0.0.0.0/0 -j ACCEPT
     
     # Other firewall rules
     # insert here your firewall rules
