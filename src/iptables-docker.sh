@@ -79,46 +79,46 @@ start() {
     ###############
 
     # === anti scan ===
-    $IPT -N SCANS
-    $IPT -A SCANS -p tcp --tcp-flags FIN,URG,PSH FIN,URG,PSH -j DROP
-    $IPT -A SCANS -p tcp --tcp-flags ALL ALL -j DROP
-    $IPT -A SCANS -p tcp --tcp-flags ALL NONE -j DROP
-    $IPT -A SCANS -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+    #$IPT -N SCANS
+    #$IPT -A SCANS -p tcp --tcp-flags FIN,URG,PSH FIN,URG,PSH -j DROP
+    #$IPT -A SCANS -p tcp --tcp-flags ALL ALL -j DROP
+    #$IPT -A SCANS -p tcp --tcp-flags ALL NONE -j DROP
+    #$IPT -A SCANS -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
     ####################
-    echo "[Anti-scan is ready]"
+    # echo "[Anti-scan is ready]"
 
     #No spoofing
-    if [ -e /proc/sys/net/ipv4/conf/all/ip_filter ]; then
-        for filtre in /proc/sys/net/ipv4/conf/*/rp_filter
-        do
-            echo > 1 $filtre
-        done
-    fi
-    echo "[Anti-spoofing is ready]"
+    # if [ -e /proc/sys/net/ipv4/conf/all/ip_filter ]; then
+    #     for filtre in /proc/sys/net/ipv4/conf/*/rp_filter
+    #     do
+    #         echo > 1 $filtre
+    #     done
+    # fi
+    # echo "[Anti-spoofing is ready]"
 
-    #No synflood
-    if [ -e /proc/sys/net/ipv4/tcp_syncookies ]; then
-        echo 1 > /proc/sys/net/ipv4/tcp_syncookies
-    fi
-    echo "[Anti-synflood is ready]"
+    # #No synflood
+    # if [ -e /proc/sys/net/ipv4/tcp_syncookies ]; then
+    #     echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+    # fi
+    # echo "[Anti-synflood is ready]"
 
-    ####################
-    # === Clean particulars paquets ===
-    #Make sure NEW incoming tcp connections are SYN packets
-    $IPT -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
-    # Packets with incoming fragments
-    $IPT -A INPUT -f -j DROP
-    # incoming malformed XMAS packets
-    $IPT -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
-    # Incoming malformed NULL packets
-    $IPT -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+    # ####################
+    # # === Clean particulars paquets ===
+    # #Make sure NEW incoming tcp connections are SYN packets
+    # $IPT -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
+    # # Packets with incoming fragments
+    # $IPT -A INPUT -f -j DROP
+    # # incoming malformed XMAS packets
+    # $IPT -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
+    # # Incoming malformed NULL packets
+    # $IPT -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
 
-    #Drop broadcast
-    $IPT -A INPUT -m pkttype --pkt-type broadcast -j DROP
+    # #Drop broadcast
+    # $IPT -A INPUT -m pkttype --pkt-type broadcast -j DROP
 
-    # Accept inbound TCP packets
-    $IPT -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-    $IPT -A INPUT -p tcp --dport 62000 -m state --state NEW -s 0.0.0.0/0 -j ACCEPT
+    # # Accept inbound TCP packets
+    # $IPT -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+    # $IPT -A INPUT -p tcp --dport 62000 -m state --state NEW -s 0.0.0.0/0 -j ACCEPT
     
     # Other firewall rules
     # insert here your firewall rules
@@ -130,17 +130,17 @@ start() {
     # $IPT -A INPUT -p udp --dport 4789 -m state --state NEW -s 192.168.1.0/24 -j ACCEPT
 
     # Accept inbound ICMP messages
-    $IPT -A INPUT -p ICMP --icmp-type 8 -s 0.0.0.0/0 -j ACCEPT
-    $IPT -A INPUT -p ICMP --icmp-type 11 -s 0.0.0.0/0 -j ACCEPT
+    # $IPT -A INPUT -p ICMP --icmp-type 8 -s 0.0.0.0/0 -j ACCEPT
+    # $IPT -A INPUT -p ICMP --icmp-type 11 -s 0.0.0.0/0 -j ACCEPT
 
     ###############
     ###   LOG   ###
     ###############
 
-    $IPT -N LOGGING
-    $IPT -A INPUT -j LOGGING
-    $IPT -A LOGGING -m limit --limit 2/min -j LOG --log-prefix "IPTables-Dropped: " --log-level 4
-    $IPT -A LOGGING -j DROP
+    # $IPT -N LOGGING
+    # $IPT -A INPUT -j LOGGING
+    # $IPT -A LOGGING -m limit --limit 2/min -j LOG --log-prefix "IPTables-Dropped: " --log-level 4
+    # $IPT -A LOGGING -j DROP
 }
 
 docker_restore() {
